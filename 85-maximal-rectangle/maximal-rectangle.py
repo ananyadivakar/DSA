@@ -1,0 +1,40 @@
+class Solution:
+    def maximalRectangle(self, matrix: List[List[str]]) -> int:
+
+        if not matrix:
+            return 0
+
+        cols = len(matrix[0])
+        heights = [0] * cols
+        max_area = 0
+
+        def largestRectangle(heights):
+            stack = []
+            max_area = 0
+
+            for i in range(len(heights) + 1):
+
+                current = heights[i] if i < len(heights) else 0
+
+                while stack and current < heights[stack[-1]]:
+                    h = heights[stack.pop()]
+
+                    width = i if not stack else i - stack[-1] - 1
+
+                    max_area = max(max_area, h * width)
+
+                stack.append(i)
+
+            return max_area
+
+        for row in matrix:
+
+            for j in range(cols):
+                if row[j] == '1':
+                    heights[j] += 1
+                else:
+                    heights[j] = 0
+
+            max_area = max(max_area, largestRectangle(heights))
+
+        return max_area
